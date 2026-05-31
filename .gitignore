@@ -1,0 +1,6 @@
+obj/
+bin/
+.vs/
+*.user
+.env
+appsettings.Production.json
