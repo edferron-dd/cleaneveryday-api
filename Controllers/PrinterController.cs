@@ -25,7 +25,7 @@ public class PrinterController : ControllerBase
         var printers = new List<object>();
         await foreach (var entity in _printerTable.QueryAsync<PrinterEntity>())
         {
-            printers.Add(new { id = entity.Id, name = entity.Name, status = entity.Status });
+            printers.Add(new { id = entity.id, name = entity.name, status = entity.status });
         }
 
         _logger.LogInformation("Returning {Count} printers", printers.Count);
@@ -55,7 +55,7 @@ public class PrinterController : ControllerBase
         await foreach (var entity in _printerTable.QueryAsync<PrinterEntity>())
         {
             allPrinters.Add(entity);
-            if (entity.Id == id) target = entity;
+            if (entity.id == id) target = entity;
         }
 
         if (target == null)
@@ -66,11 +66,11 @@ public class PrinterController : ControllerBase
 
         foreach (var printer in allPrinters)
         {
-            printer.Status = printer.Id == id ? "selected" : string.Empty;
+            printer.status = printer.id == id ? "selected" : string.Empty;
             await _printerTable.UpsertEntityAsync(printer);
         }
 
         _logger.LogInformation("Printer {Id} set to selected, all others cleared", id);
-        return Ok(new { id = target.Id, name = target.Name, status = "selected" });
+        return Ok(new { id = target.id, name = target.name, status = "selected" });
     }
 }

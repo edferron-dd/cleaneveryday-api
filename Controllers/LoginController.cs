@@ -30,7 +30,7 @@ public class LoginController : ControllerBase
         }
 
         var entities = _profileTable.QueryAsync<UserProfileEntity>(
-            e => e.Username == request.Username);
+            TableClient.CreateQueryFilter($"username eq {request.Username}"));
 
         UserProfileEntity? profile = null;
         await foreach (var entity in entities)
@@ -45,13 +45,13 @@ public class LoginController : ControllerBase
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
-        _logger.LogInformation("Login successful for user: {Username}, id: {Id}", request.Username, profile.Id);
+        _logger.LogInformation("Login successful for user: {Username}, id: {Id}", request.Username, profile.id);
         return Ok(new
         {
-            userId = profile.Id,
-            fullname = profile.Fullname,
-            username = profile.Username,
-            location = profile.Location
+            userId = profile.id,
+            fullname = profile.fullname,
+            username = profile.username,
+            location = profile.location
         });
     }
 
@@ -60,17 +60,18 @@ public class LoginController : ControllerBase
     {
         _logger.LogInformation("GetProfile called for userId: {UserId}", userId);
 
-        var entities = _profileTable.QueryAsync<UserProfileEntity>(e => e.Id == userId);
+        var entities = _profileTable.QueryAsync<UserProfileEntity>(
+            TableClient.CreateQueryFilter($"id eq {userId}"));
 
         await foreach (var entity in entities)
         {
             _logger.LogInformation("Profile found for userId: {UserId}", userId);
             return Ok(new
             {
-                id = entity.Id,
-                fullname = entity.Fullname,
-                username = entity.Username,
-                location = entity.Location
+                id = entity.id,
+                fullname = entity.fullname,
+                username = entity.username,
+                location = entity.location
             });
         }
 
