@@ -27,7 +27,7 @@ public class LocationController : ControllerBase
         var locations = new List<object>();
         await foreach (var entity in _locationTable.QueryAsync<LocationEntity>())
         {
-            locations.Add(new { id = entity.RowKey, name = entity.name });
+            locations.Add(new { id = entity.RowKey, name = entity.Name });
         }
 
         _logger.LogInformation("Returning {Count} locations", locations.Count);
