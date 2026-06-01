@@ -27,7 +27,7 @@ public class LocationController : ControllerBase
         var locations = new List<object>();
         await foreach (var entity in _locationTable.QueryAsync<LocationEntity>())
         {
-            locations.Add(new { id = entity.RowKey, name = entity.Name });
+            locations.Add(new { id = entity.RowKey, name = entity.name });
         }
 
         _logger.LogInformation("Returning {Count} locations", locations.Count);
@@ -39,10 +39,11 @@ public class LocationController : ControllerBase
     {
         _logger.LogInformation("GetUserLocation called for userId: {UserId}", userId);
 
-        await foreach (var entity in _userLocationTable.QueryAsync<UserLocationEntity>(e => e.UserId == userId))
+        await foreach (var entity in _userLocationTable.QueryAsync<UserLocationEntity>(
+            TableClient.CreateQueryFilter($"userId eq {userId}")))
         {
-            _logger.LogInformation("User location found: {Location} for userId: {UserId}", entity.Location, userId);
-            return Ok(new { userId = entity.UserId, location = entity.Location });
+            _logger.LogInformation("User location found: {Location} for userId: {UserId}", entity.location, userId);
+            return Ok(new { userId = entity.userId, location = entity.location });
         }
 
         _logger.LogInformation("No location found for userId: {UserId}", userId);
@@ -58,8 +59,8 @@ public class LocationController : ControllerBase
         {
             PartitionKey = "userlocation",
             RowKey = userId,
-            UserId = userId,
-            Location = request.Location
+            userId = userId,
+            location = request.Location
         };
 
         await _userLocationTable.UpsertEntityAsync(entity);

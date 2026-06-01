@@ -10,10 +10,10 @@ public class UserProfileEntity : ITableEntity
     public DateTimeOffset? Timestamp { get; set; }
     public ETag ETag { get; set; }
 
-    public string Id { get; set; } = string.Empty;
-    public string Fullname { get; set; } = string.Empty;
-    public string Username { get; set; } = string.Empty;
-    public string Location { get; set; } = string.Empty;
+    public string id { get; set; } = string.Empty;
+    public string fullname { get; set; } = string.Empty;
+    public string username { get; set; } = string.Empty;
+    public string location { get; set; } = string.Empty;
 }
 
 public class LocationEntity : ITableEntity
@@ -23,7 +23,7 @@ public class LocationEntity : ITableEntity
     public DateTimeOffset? Timestamp { get; set; }
     public ETag ETag { get; set; }
 
-    public string Name { get; set; } = string.Empty;
+    public string name { get; set; } = string.Empty;
 }
 
 public class PrinterEntity : ITableEntity
@@ -33,9 +33,9 @@ public class PrinterEntity : ITableEntity
     public DateTimeOffset? Timestamp { get; set; }
     public ETag ETag { get; set; }
 
-    public string Id { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string Status { get; set; } = string.Empty;
+    public string id { get; set; } = string.Empty;
+    public string name { get; set; } = string.Empty;
+    public string status { get; set; } = string.Empty;
 }
 
 public class ChecklistEntity : ITableEntity
@@ -45,9 +45,9 @@ public class ChecklistEntity : ITableEntity
     public DateTimeOffset? Timestamp { get; set; }
     public ETag ETag { get; set; }
 
-    public string Id { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string UserId { get; set; } = string.Empty;
+    public string id { get; set; } = string.Empty;
+    public string name { get; set; } = string.Empty;
+    public string userId { get; set; } = string.Empty;
 }
 
 public class ChecklistItemEntity : ITableEntity
@@ -57,10 +57,10 @@ public class ChecklistItemEntity : ITableEntity
     public DateTimeOffset? Timestamp { get; set; }
     public ETag ETag { get; set; }
 
-    public string Id { get; set; } = string.Empty;
-    public string ChecklistId { get; set; } = string.Empty;
-    public string Text { get; set; } = string.Empty;
-    public bool Status { get; set; } = false;
+    public string id { get; set; } = string.Empty;
+    public string checklistId { get; set; } = string.Empty;
+    public string text { get; set; } = string.Empty;
+    public bool status { get; set; } = false;
 }
 
 public class UserLocationEntity : ITableEntity
@@ -70,6 +70,6 @@ public class UserLocationEntity : ITableEntity
     public DateTimeOffset? Timestamp { get; set; }
     public ETag ETag { get; set; }
 
-    public string UserId { get; set; } = string.Empty;
-    public string Location { get; set; } = string.Empty;
+    public string userId { get; set; } = string.Empty;
+    public string location { get; set; } = string.Empty;
 }

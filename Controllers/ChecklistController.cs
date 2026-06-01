@@ -25,14 +25,16 @@ public class ChecklistController : ControllerBase
         _logger.LogInformation("GetChecklist called for userId: {UserId}", userId);
 
         var checklists = new List<object>();
-        await foreach (var cl in _checklistTable.QueryAsync<ChecklistEntity>(e => e.UserId == userId))
+        await foreach (var cl in _checklistTable.QueryAsync<ChecklistEntity>(
+            TableClient.CreateQueryFilter($"userId eq {userId}")))
         {
             var items = new List<object>();
-            await foreach (var item in _itemTable.QueryAsync<ChecklistItemEntity>(e => e.ChecklistId == cl.Id))
+            await foreach (var item in _itemTable.QueryAsync<ChecklistItemEntity>(
+                TableClient.CreateQueryFilter($"checklistId eq {cl.id}")))
             {
-                items.Add(new { id = item.Id, checklistId = item.ChecklistId, text = item.Text, status = item.Status });
+                items.Add(new { id = item.id, checklistId = item.checklistId, text = item.text, status = item.status });
             }
-            checklists.Add(new { id = cl.Id, name = cl.Name, userId = cl.UserId, items });
+            checklists.Add(new { id = cl.id, name = cl.name, userId = cl.userId, items });
         }
 
         _logger.LogInformation("Returning {Count} checklists for userId: {UserId}", checklists.Count, userId);
@@ -49,9 +51,9 @@ public class ChecklistController : ControllerBase
         {
             PartitionKey = "checklist",
             RowKey = checklistId,
-            Id = checklistId,
-            Name = request.Name,
-            UserId = request.UserId
+            id = checklistId,
+            name = request.Name,
+            userId = request.UserId
         };
 
         await _checklistTable.UpsertEntityAsync(entity);
@@ -66,10 +68,10 @@ public class ChecklistController : ControllerBase
                 {
                     PartitionKey = "checklistitem",
                     RowKey = itemId,
-                    Id = itemId,
-                    ChecklistId = checklistId,
-                    Text = itemText,
-                    Status = false
+                    id = itemId,
+                    checklistId = checklistId,
+                    text = itemText,
+                    status = false
                 };
                 await _itemTable.UpsertEntityAsync(itemEntity);
                 _logger.LogInformation("Checklist item created with id: {Id}", itemId);
@@ -95,10 +97,10 @@ public class ChecklistController : ControllerBase
         {
             PartitionKey = "checklistitem",
             RowKey = itemId,
-            Id = itemId,
-            ChecklistId = checklistId,
-            Text = request.Text,
-            Status = false
+            id = itemId,
+            checklistId = checklistId,
+            text = request.Text,
+            status = false
         };
 
         await _itemTable.UpsertEntityAsync(entity);
@@ -112,7 +114,8 @@ public class ChecklistController : ControllerBase
         _logger.LogInformation("ToggleItem called for checklistId: {ChecklistId}, itemId: {ItemId}", checklistId, id);
 
         ChecklistItemEntity? found = null;
-        await foreach (var item in _itemTable.QueryAsync<ChecklistItemEntity>(e => e.Id == id && e.ChecklistId == checklistId))
+        await foreach (var item in _itemTable.QueryAsync<ChecklistItemEntity>(
+            TableClient.CreateQueryFilter($"id eq {id} and checklistId eq {checklistId}")))
         {
             found = item;
             break;
@@ -124,9 +127,9 @@ public class ChecklistController : ControllerBase
             return NotFound(new { message = "Item not found" });
         }
 
-        found.Status = !found.Status;
+        found.status = !found.status;
         await _itemTable.UpsertEntityAsync(found);
-        _logger.LogInformation("Item {Id} toggled to status: {Status}", id, found.Status);
-        return Ok(new { id = found.Id, checklistId = found.ChecklistId, text = found.Text, status = found.Status });
+        _logger.LogInformation("Item {Id} toggled to status: {Status}", id, found.status);
+        return Ok(new { id = found.id, checklistId = found.checklistId, text = found.text, status = found.status });
     }
 }
