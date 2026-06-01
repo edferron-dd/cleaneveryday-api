@@ -23,7 +23,7 @@ public class LocationEntity : ITableEntity
     public DateTimeOffset? Timestamp { get; set; }
     public ETag ETag { get; set; }
 
-    public string name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 }
 
 public class PrinterEntity : ITableEntity
