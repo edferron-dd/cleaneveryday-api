@@ -1,10 +1,8 @@
 using Microsoft.Extensions.Azure;
 using Serilog;
-using Serilog.Formatting.Compact;
 
 Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .WriteTo.Console(new CompactJsonFormatter())
+    .WriteTo.Console()
     .CreateBootstrapLogger();
 
 Log.Information("Starting dd-cleaneveryday-api");
@@ -14,8 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((ctx, services, config) => config
     .ReadFrom.Configuration(ctx.Configuration)
     .ReadFrom.Services(services)
-    .Enrich.FromLogContext()
-    .WriteTo.Console(new CompactJsonFormatter()));
+    .WriteTo.Console());
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
